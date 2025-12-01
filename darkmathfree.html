@@ -22,10 +22,17 @@
     <button>Tìm</button>
 </div>
 
-<div class="nav-buttons">
-  <a href="#" class="free-btn">FREE</a>
-</div>
-
+  <!-- Right buttons + key -->
+  <div style="display:flex; align-items:center; gap:15px;">
+    <div class="nav-buttons">
+      <a href="#" class="free-btn">FREE</a>
+    </div>
+    <div id="keyDisplay" 
+         style="background:#1f1f1f; padding:8px 15px;
+                border-radius:10px; font-size:16px; border:1px solid #444;">
+      ⏳ Key: <span id="keyCountdown">00:00:00</span>
+    </div>
+  </div>
   </nav>
 
   <!-- CARD SECTION -->
@@ -203,5 +210,54 @@
     render();
   </script>
   </div>
+    <script>
+function loadCountdown() {
+  const expire = Number(localStorage.getItem("dm_expire"));
+  const deviceLimit = Number(localStorage.getItem("dm_device_limit"));
+  const devices = JSON.parse(localStorage.getItem("dm_devices") || "[]");
+
+  if (!expire) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Kiểm tra vượt thiết bị
+  if (devices.length > deviceLimit) {
+    alert("Số thiết bị vượt giới hạn!");
+    window.location.href = "login.html";
+    return;
+  }
+
+  function tick() {
+    let now = Date.now();
+    let diff = expire - now;
+    let el = document.getElementById("keyCountdown");
+
+    if (diff <= 0) {
+      el.textContent = "Hết hạn";
+      el.style.color = "#ff6b6b";
+
+      setTimeout(() => {
+        localStorage.clear();
+        window.location.href = "matkhau1.html";
+      }, 1500);
+
+      return;
+    }
+
+    let h = Math.floor(diff / 3600000);
+    let m = Math.floor((diff % 3600000) / 60000);
+    let s = Math.floor((diff % 60000) / 1000);
+
+    el.textContent =
+      `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  setInterval(tick, 1000);
+  tick();
+}
+
+loadCountdown();
+</script>
 </body>
 </html>
