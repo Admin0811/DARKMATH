@@ -109,7 +109,7 @@
             <span class="toggle-password" onclick="togglePassword()">👁️</span>
         </div>
 
-        <button onclick="checkPass()">Đăng nhập</button>
+        <button onclick="checkKey()">Đăng nhập</button>
         <p class="error" id="errorText">Sai key! Hãy liên hệ admin để lấy key</p>
     </div>
 
@@ -125,7 +125,7 @@ function getDeviceID() {
 
 // Xử lý đăng nhập bằng KEY
 function checkKey() {
-    let key = document.getElementById("key").value.trim();
+    let key = document.getElementById("password").value.trim();
     let errorText = document.getElementById("errorText");
 
     if (!key) {
@@ -135,7 +135,6 @@ function checkKey() {
     }
 
     try {
-        // Loại bỏ tiền tố DARKMATHFREE-
         if (!key.startsWith("DARKMATHFREE-")) {
             errorText.innerText = "❌ Key sai định dạng!";
             errorText.style.display = "block";
@@ -153,6 +152,7 @@ function checkKey() {
 
         let expiresAt = Number(parts[1]);
         let deviceLimit = Number(parts[2]);
+
         if (!expiresAt || !deviceLimit) {
             errorText.innerText = "❌ Key không hợp lệ!";
             errorText.style.display = "block";
@@ -183,7 +183,6 @@ function checkKey() {
         localStorage.setItem("dm_device_limit", deviceLimit);
         localStorage.setItem("dm_devices", JSON.stringify(used));
 
-        // Đăng nhập thành công
         window.location.href = "darkmathfree.html";
 
     } catch (e) {
@@ -191,8 +190,6 @@ function checkKey() {
         errorText.style.display = "block";
     }
 }
-</script>
-<script>
 /* ===== NÚT HIỆN / ẨN MẬT KHẨU ===== */
 function togglePassword() {
     const passInput = document.getElementById("password");
@@ -207,6 +204,7 @@ function togglePassword() {
     }
 }
 </script>
+
 </body>
 </html>
 
