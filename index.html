@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Ultra Holiday Modal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="preload" href="darkmathfree.html" >
+<link rel="preload" href="tinhot.html" as="document">
+
+<style>
+/* =========================================================
+   ROOT
+========================================================= */
+:root{
+    --stars-x:0px;
+    --stars-y:0px;
+    --glow-strength:.15;
+    --stars-opacity:1;
+}
+
+/* =========================================================
+   RESET / BASE
+========================================================= */
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,Arial}
+body{
+    height:100vh;
+    /* Nền không gian 3D: Gradient radial tạo chiều sâu từ trung tâm tối ra rìa sáng hơn */
+    background: radial-gradient(ellipse at center, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+    color:#fff;
+    overflow:hidden;
+    /* Thêm perspective cho hiệu ứng 3D tổng thể */
+    perspective: 1000px;
+}
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6); /* Giảm độ mờ để lộ nền không gian */
+    backdrop-filter:blur(5px); /* Giảm blur để giữ cảm giác không gian */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    /* Thêm transform 3D cho modal nổi trong không gian */
+    transform-style: preserve-3d;
+}
+
+/* =========================================================
+   THEME AURORA (LOẠI BỎ, THAY BẰNG NỀN KHÔNG GIAN)
+========================================================= */
+/* Đã loại bỏ theme-aurora để tập trung vào nền không gian 3D */
+
+/* =========================================================
+   STARS (THAY THẾ SNOW BẰNG NGÔI SAO CHO HIỆU ỨNG KHÔNG GIAN 3D)
+========================================================= */
+.stars{
+    position:absolute;
+    inset:-200%;
+    pointer-events:none;
+    opacity:var(--stars-opacity);
+    transform:translate(var(--stars-x),var(--stars-y));
+    animation:starsDrift linear infinite, spinSlow linear infinite; /* Thêm spinSlow cho hiệu ứng xoay từ từ */
+}
+
+.layer1{ /* Ngôi sao gần nhất: Lớn hơn, di chuyển nhanh hơn (tạo chiều sâu 3D) */
+    background:radial-gradient(3px 3px at 20% 30%, rgba(255,255,255,.9) 50%, transparent 70%);
+    background-size:200px 200px;
+    animation-duration:30s, 120s; /* starsDrift 30s, spinSlow 120s */
+}
+.layer2{ /* Ngôi sao trung bình */
+    background:radial-gradient(2px 2px at 40% 60%, rgba(255,255,255,.7) 50%, transparent 70%);
+    background-size:150px 150px;
+    animation-duration:50s, 150s; /* starsDrift 50s, spinSlow 150s (chậm hơn để tạo chiều sâu) */
+}
+.layer3{ /* Ngôi sao xa nhất: Nhỏ hơn, di chuyển chậm hơn (tạo parallax 3D) */
+    background:radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,.5) 50%, transparent 70%);
+    background-size:100px 100px;
+    animation-duration:80s, 180s; /* starsDrift 80s, spinSlow 180s (chậm nhất) */
+}
+
+@keyframes starsDrift{
+    from{transform:translateY(0) translateZ(0)}
+    to{transform:translateY(-50%) translateZ(-100px)} /* Di chuyển về phía sau để tạo 3D */
+}
+
+@keyframes spinSlow{ /* Hiệu ứng xoay từ từ, đẹp mắt */
+    from{transform: rotate(0deg)}
+    to{transform: rotate(360deg)}
+}
+
+/* =========================================================
+   RANDOM STARS (NGÔI SAO NGẪU NHIÊN, XOAY LỘN XỘN)
+========================================================= */
+.random-star{
+    position:absolute;
+    border-radius:50%;
+    background: rgba(255,255,255,.8);
+    pointer-events:none;
+    animation: twinkle 2s ease-in-out infinite alternate, randomSpin linear infinite; /* Lấp lánh và xoay ngẫu nhiên */
+}
+
+@keyframes twinkle{ /* Lấp lánh như ngôi sao vũ trụ */
+    0%{opacity:0.5; transform:scale(1)}
+    100%{opacity:1; transform:scale(1.2)}
+}
+
+@keyframes randomSpin{ /* Xoay ngẫu nhiên (sẽ được set duration ngẫu nhiên trong JS) */
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+/* =========================================================
+   COUNTDOWN GLOW
+========================================================= */
+.countdown{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:72px;
+    font-weight:600;
+    color:rgba(255,255,255,.1); /* Giảm độ sáng cho phù hợp không gian */
+    letter-spacing:6px;
+    pointer-events:none;
+    mix-blend-mode:overlay;
+    animation:pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse{
+    0%,100%{opacity:.3}
+    50%{opacity:.6}
+}
+
+/* =========================================================
+   FIREWORKS (THAY ĐỔI THÀNH PHÁO HOA VŨ TRỤ)
+========================================================= */
+.firework{
+    position:absolute;
+    width:8px; /* Lớn hơn cho hiệu ứng vũ trụ */
+    height:8px;
+    border-radius:50%;
+    animation:explode 2s ease-out forwards;
+    box-shadow: 0 0 10px currentColor; /* Thêm glow cho ngôi sao */
+}
+
+@keyframes explode{
+    from{transform:scale(1);opacity:1}
+    to{transform:scale(8);opacity:0}
+}
+
+/* =========================================================
+   VIGNETTE (GIỮ NGUYÊN NHƯNG ĐIỀU CHỈNH CHO KHÔNG GIAN)
+========================================================= */
+.vignette{
+    position:absolute;
+    inset:0;
+    background:radial-gradient(
+        ellipse at center,
+        rgba(0,0,0,0) 30%, /* Mở rộng vùng sáng hơn */
+        rgba(0,10,20,.8) 100%
+    );
+    pointer-events:none;
+}
+
+/* =========================================================
+   MODAL (GIỮ NGUYÊN)
+========================================================= */
+.modal{
+    position:relative;
+    width:92%;
+    max-width:420px;
+    padding:34px;
+    text-align:center;
+    background:rgba(18,18,18,.6); /* Tăng độ trong suốt để lộ nền không gian */
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:20px;
+    backdrop-filter:blur(15px);
+    box-shadow:0 40px 80px rgba(0,0,0,.8);
+    /* Thêm transform 3D cho modal */
+    transform: translateZ(50px);
+}
+
+.modal h1{font-size:22px;margin-bottom:10px}
+.modal p{opacity:.8;margin-bottom:24px}
+
+.actions{
+    display:flex;
+    gap:14px;
+}
+
+.btn{
+    flex:1;
+    padding:14px 0;
+    border:none;
+    border-radius:12px;
+    font-weight:600;
+    cursor:pointer;
+    color:#fff;
+    transition:.25s;
+}
+
+.btn-primary{background:linear-gradient(135deg,#ff4d4d,#ff2d87)}
+.btn-secondary{background:linear-gradient(135deg,#36c5f0,#5b5bff)}
+
+.btn:hover{transform:scale(1.05) translateZ(10px)} /* Thêm Z cho 3D */
+.btn:active{transform:scale(.95) translateZ(5px)}
+</style>
+</head>
+
+<body>
+
+<div class="modal-overlay">
+
+    <!-- Loại bỏ theme-aurora, thay bằng nền không gian trong body -->
+
+    <div class="stars layer1"></div>
+    <div class="stars layer2"></div>
+    <div class="stars layer3"></div>
+
+    <!-- Container cho ngôi sao ngẫu nhiên -->
+    <div id="random-stars-container"></div>
+
+    <div class="countdown" id="countdown"></div>
+
+    <div class="vignette"></div>
+
+    <div class="modal">
+        <h1>Chọn hướng truy cập</h1>
+        <p>Vui lòng chọn để tiếp tục</p>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="go('A')">DARKMATH</button>
+            <button class="btn btn-secondary" onclick="go('B')">Bảng Tin Hot</button>
+</div>
+
+<!-- Chỉ giữ backgroundMusic, loại bỏ autoplay và muted để tránh chặn
+<audio id="backgroundMusic" loop preload="auto">
+    <source src="ambient-space.mp3" type="audio/mpeg">
+</audio> -->
+
+<script>
+/* =========================================================
+   NAV
+========================================================= */
+const TARGETS={A:"darkmathfree.html",B:"tinhot.html"};
+let locked=false;
+function go(k){
+    if(locked)return;
+    locked=true;
+    setTimeout(()=>location.href=TARGETS[k],250);
+}
+
+
+/* =========================================================
+   STARS MOUSE (THAY ĐỔI TỪ SNOW SANG STARS CHO 3D)
+========================================================= */
+window.addEventListener("mousemove",e=>{
+    const x=(e.clientX/window.innerWidth-.5)*30; /* Tăng độ dịch chuyển cho 3D */
+    const y=(e.clientY/window.innerHeight-.5)*30;
+    document.documentElement.style.setProperty("--stars-x",`${x}px`);
+    document.documentElement.style.setProperty("--stars-y",`${y}px`);
+});
+
+/* =========================================================
+   THEME (LOẠI BỎ AURORA, THAY BẰNG NỀN KHÔNG GIAN)
+========================================================= */
+/* Đã loại bỏ applyTheme vì không cần aurora */
+
+/* =========================================================
+   RANDOM STARS GENERATION (TẠO NGÔI SAO NGẪU NHIÊN XOAY LỘN XỘN)
+========================================================= */
+function createRandomStars(){
+    const container = document.getElementById('random-stars-container');
+    const numStars = 100; // Số lượng ngôi sao ngẫu nhiên
+    for(let i = 0; i < numStars; i++){
+        const star = document.createElement('div');
+        star.className = 'random-star';
+        
+        // Kích thước ngẫu nhiên (0.5px đến 3px)
+        const size = Math.random() * 2.5 + 0.5;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Vị trí ngẫu nhiên trên màn hình
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        
+        // Tốc độ xoay ngẫu nhiên (10s đến 60s), hướng ngẫu nhiên (thuận hoặc ngược)
+        const spinDuration = Math.random() * 50 + 10;
+        const spinDirection = Math.random() > 0.5 ? 'normal' : 'reverse';
+        star.style.animationDuration = `2s, ${spinDuration}s`; // twinkle 2s, spin ngẫu nhiên
+        star.style.animationDirection = `alternate, ${spinDirection}`;
+        
+        container.appendChild(star);
+    }
+}
+createRandomStars(); // Tạo ngôi sao khi load trang
+
+/* =========================================================
+   COUNTDOWN + MIDNIGHT EVENTS
+========================================================= */
+const countdown=document.getElementById("countdown");
+function updateCountdown(){
+    const now=new Date();
+    const midnight=new Date();
+    midnight.setHours(24,0,0,0);
+    const diff=midnight-now;
+    if(diff<=0){
+        countdown.style.display="none";
+        startNewYearEffects();
+        return;
+    }
+    const m=Math.floor(diff/60000);
+    const s=Math.floor(diff/1000)%60;
+    countdown.textContent=`${m}:${s.toString().padStart(2,"0")}`;
+}
+setInterval(updateCountdown,1000);
+
+/* =========================================================
+   NEW YEAR EFFECTS (THAY ĐỔI CHO KHÔNG GIAN)
+========================================================= */
+function startNewYearEffects(){
+    // Fade stars
+    document.documentElement.style.setProperty("--stars-opacity",".8");
+    setTimeout(()=>document.documentElement.style.setProperty("--stars-opacity",".5"),8000);
+    setTimeout(()=>document.documentElement.style.setProperty("--stars-opacity",".2"),16000);
+
+    // Fade random stars
+    const randomStars = document.querySelectorAll('.random-star');
+    randomStars.forEach(star => {
+        star.style.opacity = '0.5';
+        setTimeout(() => star.style.opacity = '0.2', 8000);
+        setTimeout(() => star.style.opacity = '0.1', 16000);
+    });
+
+    // Fireworks vũ trụ
+    for(let i=0;i<15;i++){ /* Tăng số lượng */
+        setTimeout(()=>createFirework(),i*300);
+    }
+}
+
+function createFirework(){
+    const fw=document.createElement("div");
+    fw.className="firework";
+    fw.style.left=Math.random()*100+"%";
+    fw.style.top=Math.random()*60+"%";
+    fw.style.background=`hsl(${Math.random()*360},100%,70%)`; /* Màu ngẫu nhiên cho vũ trụ */
+    document.body.appendChild(fw);
+    setTimeout(()=>fw.remove(),2500);
+}
+
+/* =========================================================
+   SOUND (SỬA ĐỔI ĐỂ PHÁT KHI CLICK)
+========================================================= */
+// const music=document.getElementById("backgroundMusic");
+// music.volume=.1; /* TĂNG VOLUME TẠM THỜI (từ 0.02 lên 0.1) để kiểm tra */
+
+// const playBtn = document.getElementById("playMusicBtn");
+
+// // Hàm phát âm thanh
+// function playMusic(){
+//     music.play().then(() => {
+//         console.log("Background music playing");
+//     }).catch(err => {
+//         console.error("Background music failed:", err);
+//         alert("Không thể phát nhạc. Kiểm tra file hoặc đường dẫn.");
+//     });
+// }
+
+// // Phát khi click vào trang (sau khi load)
+// document.addEventListener("click", playMusic, {once:true});
+
+// // Phát thủ công khi click nút (nếu cần)
+// playBtn.addEventListener("click", playMusic);
+</script>
+
+</body>
+</html>
