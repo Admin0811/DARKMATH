@@ -22,11 +22,10 @@
     <button>Tìm</button>
 
 </div>
-    <div>
-       <a href="tinhot.html" class="hot-button">
-  Bảng Tin Hot
+    <div class="hot-buttons">
+  <a href="tinhot.html" class="hot-btn">Bảng Tin Hot</a>
+  <a href="index.html" class="new-btn">Quay Lại</a>
 </a>
-
     </div>
 
   <!-- Right buttons + key
@@ -278,6 +277,29 @@ function loadCountdown() {
 
 loadCountdown(); -->
     </script>
+<script>
+(function(){
+  const body = document.body;
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  body.classList.remove('theme-normal','theme-noel','theme-newyear');
+
+  // Noel: 20/12 – 26/12
+  if (month === 12 && day >= 20 && day <= 26) {
+    body.classList.add('theme-noel');
+  }
+  // New Year: 31/12 – 03/01
+  else if ((month === 12 && day >= 31) || (month === 1 && day <= 3)) {
+    body.classList.add('theme-newyear');
+  }
+  // Normal
+  else {
+    body.classList.add('theme-normal');
+  }
+})();
+</script>
 
 </body>
 </html>

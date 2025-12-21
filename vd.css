@@ -221,45 +221,56 @@ body {
     .count{font-weight:600}
     .empty{color:var(--muted);padding:18px;text-align:center}
     footer.note{font-size:13px;color:var(--muted);margin-top:8px} 
-.hot-button {
-  position: fixed;
-  top: calc(16px + env(safe-area-inset-top));
-  right: calc(16px + env(safe-area-inset-right));
-  z-index: 9999;
-
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-
-  color: #fff;
-  text-decoration: none;
-  border-radius: 999px;
-
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-
-  box-shadow:
-    0 6px 18px rgba(0,0,0,.35),
-    inset 0 0 0 1px rgba(255,255,255,.12);
-
-  backdrop-filter: blur(8px);
-
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease,
-    filter .2s ease;
+/* container */
+.hot-buttons{
+  display:flex;
+  gap:10px;
+  align-items:center;
 }
-.hot-button:hover {
+
+/* base button */
+.hot-btn,
+.new-btn{
+  --accent:#e20404;
+  background: linear-gradient(145deg,#1a1a1a,#111);
+  color:var(--accent);
+  padding:6px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:500;
+  text-decoration:none;
+  border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: all .25s ease;
+}
+
+/* hover glow */
+.hot-btn:hover,
+.new-btn:hover{
+  background:#1e1e1e;
+  box-shadow:
+    0 0 8px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 0 18px color-mix(in srgb, var(--accent) 15%, transparent);
   transform: translateY(-1px);
-  filter: brightness(1.08);
-  box-shadow:
-    0 10px 26px rgba(0,0,0,.45),
-    inset 0 0 0 1px rgba(255,255,255,.18);
 }
 
-.hot-button:active {
-  transform: translateY(0) scale(0.97);
+/* active */
+.hot-btn:active,
+.new-btn:active{
+  transform: scale(.96);
 }
+/* NORMAL */
+.theme-normal .hot-btn{ --accent:#ff7a18; }
+.theme-normal .new-btn{ --accent:#3b82f6; }
+
+/* NOEL */
+.theme-noel .hot-btn{ --accent:#22c55e; }   /* xanh Noel */
+.theme-noel .new-btn{ --accent:#ef4444; }   /* đỏ Noel */
+
+/* NEW YEAR */
+.theme-newyear .hot-btn{ --accent:#facc15; } /* vàng pháo hoa */
+.theme-newyear .new-btn{ --accent:#a855f7; } /* tím lễ hội */
+
+
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
