@@ -9,6 +9,16 @@
 body {
   background: #0e0e0e;
   color: white;
+
+   --bg-main:#0e0e0e;
+  --bg-panel:#141414;
+  --text-main:#e5e5e5;
+  --border-soft:rgba(255,255,255,.08);
+  --accent:#ff7a18;
+  background:var(--bg-main);
+  color:var(--text-main);
+  transition: background .6s ease, color .6s ease;
+
 }
 
 /* NAVBAR */
@@ -22,6 +32,10 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
+
+   background:linear-gradient(180deg,#141414,#0f0f0f);
+  border-bottom:1px solid var(--border-soft);
+  box-shadow:0 6px 20px rgba(0,0,0,.6);
 }
 
 .logo {
@@ -244,13 +258,14 @@ body {
 }
 
 /* hover glow */
+.btn:hover,
 .hot-btn:hover,
 .new-btn:hover{
   background:#1e1e1e;
-  box-shadow:
-    0 0 8px color-mix(in srgb, var(--accent) 35%, transparent),
-    0 0 18px color-mix(in srgb, var(--accent) 15%, transparent);
   transform: translateY(-1px);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 0 25px color-mix(in srgb, var(--accent) 15%, transparent);
 }
 
 /* active */
@@ -258,18 +273,38 @@ body {
 .new-btn:active{
   transform: scale(.96);
 }
+/* =====================
+   THEME COLORS
+===================== */
+
 /* NORMAL */
-.theme-normal .hot-btn{ --accent:#ff7a18; }
-.theme-normal .new-btn{ --accent:#3b82f6; }
+.theme-normal{
+  --accent:#ff7a18;
+}
 
 /* NOEL */
-.theme-noel .hot-btn{ --accent:#22c55e; }   /* xanh Noel */
-.theme-noel .new-btn{ --accent:#ef4444; }   /* đỏ Noel */
+.theme-noel{
+  --accent:#22c55e;
+  --bg-panel:#122018;
+}
 
 /* NEW YEAR */
-.theme-newyear .hot-btn{ --accent:#facc15; } /* vàng pháo hoa */
-.theme-newyear .new-btn{ --accent:#a855f7; } /* tím lễ hội */
+.theme-newyear{
+  --accent:#facc15;
+  --bg-panel:#1a1624;
+}
+@media (max-width: 768px){
+    .hot-buttons{
+        gap: 6px;
+    }
 
+    .hot-btn,
+    .new-btn{
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 5px;
+    }
+}
 
 
 /* RESPONSIVE */

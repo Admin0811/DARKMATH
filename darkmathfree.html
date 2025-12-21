@@ -281,21 +281,21 @@ loadCountdown(); -->
 (function(){
   const body = document.body;
   const now = new Date();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
+  const m = now.getMonth() + 1;
+  const d = now.getDate();
 
   body.classList.remove('theme-normal','theme-noel','theme-newyear');
 
-  // Noel: 20/12 – 26/12
-  if (month === 12 && day >= 20 && day <= 26) {
+  // Noel: 20–26/12
+  if (m === 12 && d >= 20 && d <= 26){
     body.classList.add('theme-noel');
   }
   // New Year: 31/12 – 03/01
-  else if ((month === 12 && day >= 31) || (month === 1 && day <= 3)) {
+  else if ((m === 12 && d >= 31) || (m === 1 && d <= 3)){
     body.classList.add('theme-newyear');
   }
   // Normal
-  else {
+  else{
     body.classList.add('theme-normal');
   }
 })();
